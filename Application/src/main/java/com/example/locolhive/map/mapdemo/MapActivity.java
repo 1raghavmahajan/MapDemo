@@ -12,7 +12,9 @@ import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
-import com.google.android.gms.maps.model.MarkerOptions;
+
+import java.util.Calendar;
+import java.util.Random;
 
 public class MapActivity extends AppCompatActivity implements OnMapReadyCallback {
 
@@ -48,12 +50,25 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         int mStrokeColorArgb = Color.HSVToColor(
                 79, new float[]{202, 1, 1});
 
-        map.addMarker(new MarkerOptions()
-                .position(initLatLong)
-                .draggable(false));
+//        map.addMarker(new MarkerOptions()
+//                .position(initLatLong)
+//                .draggable(false));
+
+        Random randomGen = new Random(Calendar.getInstance().getTime().getTime());
+        double v = randomGen.nextInt(200);
+        v=v/111000.0;
+        if(randomGen.nextBoolean()){
+            v=v*-1;
+        }
+        double v2 = randomGen.nextInt(200);
+        v2=v2/111000.0;
+        if(randomGen.nextBoolean()){
+            v2=v2*-1;
+        }
+        LatLng rand = new LatLng(initLatLong.latitude+v,initLatLong.longitude+v2);
 
         Circle mCircle = map.addCircle(new CircleOptions()
-                .center(initLatLong)
+                .center(rand)
                 .radius(DEFAULT_RADIUS_METERS)
                 .strokeWidth(mStrokeWidth)
                 .strokeColor(mStrokeColorArgb)
@@ -62,12 +77,12 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         mCircle.setStrokePattern(null);
 
         // Move the map so that it is centered on the initial circle
-        LatLng latLng1 = new LatLng(initLatLong.latitude+0.009,initLatLong.longitude);
-        LatLng latLng2 = new LatLng(initLatLong.latitude-0.009,initLatLong.longitude);
+        LatLng latLng1 = new LatLng(rand.latitude+0.009,rand.longitude);
+        LatLng latLng2 = new LatLng(rand.latitude-0.009,rand.longitude);
 
         LatLngBounds latLngBounds =
                 LatLngBounds.builder()
-                        .include(initLatLong)
+                        .include(rand)
                         .include(latLng1)
                         .include(latLng2).build();
 
