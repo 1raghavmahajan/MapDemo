@@ -3,6 +3,8 @@ package com.example.locolhive.map.mapdemo;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.SeekBar;
+import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -20,6 +22,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
     private LatLng initLatLong = new LatLng(-33.87365, 151.20689);
     private static final double DEFAULT_RADIUS_METERS = 250;
+    Circle mCircle;
+    SeekBar seekBar;
+    TextView tv_rad;
 
     static final private int mStrokeWidth = 4;
 
@@ -34,6 +39,12 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             double lng = extras.getDouble("Lng", 151.20689);
             initLatLong = new LatLng(lat,lng);
         }
+
+        seekBar = findViewById(R.id.radius);
+        seekBar.setProgress(250);
+
+        tv_rad = findViewById(R.id.tv_rad);
+        tv_rad.setText(seekBar.getProgress()+" meters");
 
         SupportMapFragment mapFragment =
                 (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
@@ -51,7 +62,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 79, new float[]{202, 1, 1});
 
 //        map.addMarker(new MarkerOptions()
-//                .position(initLatLong)
+//                .position(initLatLong)K
 //                .draggable(false));
 
         Random randomGen = new Random(Calendar.getInstance().getTime().getTime());
@@ -67,7 +78,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         }
         LatLng rand = new LatLng(initLatLong.latitude+v,initLatLong.longitude+v2);
 
-        Circle mCircle = map.addCircle(new CircleOptions()
+        mCircle = map.addCircle(new CircleOptions()
                 .center(rand)
                 .radius(DEFAULT_RADIUS_METERS)
                 .strokeWidth(mStrokeWidth)
@@ -75,6 +86,26 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 .fillColor(mFillColorArgb)
                 .clickable(false));
         mCircle.setStrokePattern(null);
+
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+
+                tv_rad.setText(progress+" meters");
+                mCircle.setRadius(progress);
+
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
 
         // Move the map so that it is centered on the initial circle
         LatLng latLng1 = new LatLng(rand.latitude+0.009,rand.longitude);
